@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# エディタ
+.idea/
+.vscode/
+*.swp
+
+# 環境ファイル（Laravel導入後に使用）
+.env
+.env.backup
