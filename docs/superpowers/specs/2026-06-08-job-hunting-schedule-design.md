@@ -22,10 +22,22 @@
 | 言語 / フレームワーク | PHP / Laravel |
 | DB | MySQL |
 | 認証 | Laravel Breeze |
-| 画面 | Laravel Blade（サーバーサイドレンダリング）＋ 少量のJavaScript |
+| 画面 | Laravel Blade（サーバーサイドレンダリング）＋ Tailwind CSS ＋ 少量のJavaScript |
+| カレンダーUI | FullCalendar.js |
 | インフラ | Docker（Laravel Sail：app / mysql コンテナ） |
 
 アーキテクチャ方針: **Bladeによるモノリス構成**（API+SPAは期末課題には過剰なため不採用）。
+
+### フロントエンドの作り方
+
+別フロント（React等）は作らず、**Laravel内でBlade＋Tailwind CSS**で画面を構築する（SSR）。
+処理の流れは `ルーティング(routes/web.php) → コントローラー → モデル(Eloquent/MySQL) → ビュー(Blade)` のMVC。
+
+- **認証 / 企業 / 振り返り / 苦手質問リスト画面**: 通常のBladeフォーム・一覧で実装。
+- **カレンダー画面（メイン）**: SSRのHTMLだけでは動きが不便なため、**FullCalendar.js** を利用。
+  - LaravelがDBから取得した予定を**JSON**でFullCalendarに渡して月/週ビューを描画。
+  - 予定の色に**信号機カラー（🔴重複 / 🟡間隔狭 / 通常）**を割り当てる。
+  - 予定クリックで詳細・編集へ遷移。
 
 ## 4. 機能一覧
 

@@ -14,7 +14,8 @@
 
 ## 技術スタック
 
-- PHP / Laravel（Blade によるサーバーサイドレンダリング）
+- PHP / Laravel（Blade によるサーバーサイドレンダリング）＋ Tailwind CSS
+- カレンダーUI: FullCalendar.js（予定をJSONで渡して描画、信号機カラーを割り当て）
 - MySQL
 - 認証: Laravel Breeze
 - インフラ: Docker（Laravel Sail：app / mysql の2コンテナ）
