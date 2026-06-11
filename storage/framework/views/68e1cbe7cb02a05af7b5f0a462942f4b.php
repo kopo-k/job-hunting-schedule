@@ -39,7 +39,30 @@
                     <ul class="divide-y divide-gray-100">
                         <?php $__currentLoopData = $upcoming; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <a href="/events/<?php echo e($event->id); ?>" class="flex items-center justify-between py-3 hover:bg-gray-50 -mx-2 px-2 rounded transition">
-                                <span class="text-gray-900"><?php echo e($event->title); ?></span>
+                                <span class="flex items-center gap-2 text-gray-900">
+                                    <?php if (isset($component)) { $__componentOriginal659168505750d541ebb18a921ec54e0d = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal659168505750d541ebb18a921ec54e0d = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.signal-dot','data' => ['status' => $statuses[$event->id] ?? 'normal']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('signal-dot'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['status' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($statuses[$event->id] ?? 'normal')]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal659168505750d541ebb18a921ec54e0d)): ?>
+<?php $attributes = $__attributesOriginal659168505750d541ebb18a921ec54e0d; ?>
+<?php unset($__attributesOriginal659168505750d541ebb18a921ec54e0d); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal659168505750d541ebb18a921ec54e0d)): ?>
+<?php $component = $__componentOriginal659168505750d541ebb18a921ec54e0d; ?>
+<?php unset($__componentOriginal659168505750d541ebb18a921ec54e0d); ?>
+<?php endif; ?>
+                                    <?php echo e($event->title); ?>
+
+                                </span>
                                 <span class="text-sm text-gray-500"><?php echo e($event->start_at->format('m/d H:i')); ?></span>
                             </a>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

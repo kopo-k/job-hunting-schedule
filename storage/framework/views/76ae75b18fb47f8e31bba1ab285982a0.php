@@ -36,16 +36,19 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const calendarEl = document.getElementById('calendar');
+            const isMobile = window.innerWidth < 640;
             const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
+                initialView: isMobile ? 'listWeek' : 'dayGridMonth',
                 locale: 'ja',
+                timeZone: 'Asia/Tokyo',
                 height: 'auto',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek'
+                    right: 'dayGridMonth,timeGridWeek,listWeek'
                 },
-                buttonText: { today: '今日', month: '月', week: '週' },
+                buttonText: { today: '今日', month: '月', week: '週', list: 'リスト' },
+                noEventsText: '予定はありません',
                 events: '/calendar/events'
             });
             calendar.render();
