@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
@@ -18,6 +19,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::get('/calendar', [CalendarController::class, 'index']);
+    Route::get('/calendar/events', [CalendarController::class, 'events']);
     Route::resource('companies', CompanyController::class);
     Route::resource('events', EventController::class)->except(['index']);
 });
