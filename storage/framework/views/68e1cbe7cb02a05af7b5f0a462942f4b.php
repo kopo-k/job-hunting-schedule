@@ -13,20 +13,37 @@
             <h1 class="text-2xl font-bold text-gray-900 mb-1">こんにちは、<?php echo e(Auth::user()->name); ?>さん</h1>
             <p class="text-sm text-gray-500 mb-6">就活の予定と振り返りをまとめて管理しましょう。</p>
 
-            <?php if($hasUpcomingConflict): ?>
-                <a href="/calendar" class="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4 mb-4 hover:bg-red-100 transition">
+            
+            <?php if($conflictEvents->isNotEmpty()): ?>
+                <a href="/calendar" class="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4 mb-3 hover:bg-red-100 transition">
                     <span class="text-red-500 text-xl leading-none">⚠️</span>
-                    <div>
+                    <div class="min-w-0">
                         <p class="font-semibold text-red-800">予定の重複があります</p>
-                        <p class="text-sm text-red-700">直近の予定に時間が重なっているものがあります。志望度を見て優先順位を決めましょう。</p>
+                        <p class="text-sm text-red-700 mb-1">志望度を見て優先順位を決めましょう。</p>
+                        <ul class="text-sm text-red-900 space-y-0.5">
+                            <?php $__currentLoopData = $conflictEvents->take(4); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ce): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <li>・<?php echo e($ce->start_at->format('n/j H:i')); ?> <?php echo e($ce->title); ?></li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </ul>
                     </div>
                 </a>
-            <?php elseif($soonCount > 0): ?>
+            <?php endif; ?>
+
+            <?php if($soonEvents->isNotEmpty()): ?>
                 <div class="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
                     <span class="text-amber-500 text-xl leading-none">🔔</span>
-                    <div>
-                        <p class="font-semibold text-amber-800">3日以内に <?php echo e($soonCount); ?> 件の予定があります</p>
-                        <p class="text-sm text-amber-700">ES締切や面接の準備に漏れがないか確認しましょう。</p>
+                    <div class="min-w-0">
+                        <p class="font-semibold text-amber-800">7日以内に <?php echo e($soonEvents->count()); ?> 件の予定があります</p>
+                        <p class="text-sm text-amber-700 mb-1">ES締切や面接の準備に漏れがないか確認しましょう。</p>
+                        <ul class="text-sm text-amber-900 space-y-0.5">
+                            <?php $__currentLoopData = $soonEvents->take(4); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $se): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <li class="flex items-center gap-1.5">
+                                    <?php if($se->type === 'ES締切'): ?><span class="text-xs font-medium px-1.5 rounded bg-rose-100 text-rose-700">締切</span><?php endif; ?>
+                                    <?php echo e($se->start_at->format('n/j H:i')); ?> <?php echo e($se->title); ?>
+
+                                </li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </ul>
                     </div>
                 </div>
             <?php endif; ?>
