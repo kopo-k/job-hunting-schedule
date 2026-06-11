@@ -1,11 +1,26 @@
+# Laravel
+/.phpunit.cache
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+
 # macOS
 .DS_Store
 
 # エディタ
-.idea/
-.vscode/
+/.idea
+/.vscode
+/.fleet
 *.swp
-
-# 環境ファイル（Laravel導入後に使用）
-.env
-.env.backup
