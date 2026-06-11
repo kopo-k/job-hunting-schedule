@@ -3,6 +3,7 @@
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\InterviewQuestionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/calendar/events', [CalendarController::class, 'events']);
     Route::resource('companies', CompanyController::class);
     Route::resource('events', EventController::class)->except(['index']);
+    Route::post('/events/{event}/questions', [InterviewQuestionController::class, 'store']);
+    Route::delete('/questions/{question}', [InterviewQuestionController::class, 'destroy']);
 });
 
 require __DIR__.'/auth.php';
