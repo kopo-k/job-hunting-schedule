@@ -15,6 +15,15 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="url('/calendar')" :active="request()->is('calendar')">
+                        カレンダー
+                    </x-nav-link>
+                    <x-nav-link :href="url('/companies')" :active="request()->is('companies*')">
+                        企業
+                    </x-nav-link>
+                    <x-nav-link :href="url('/weak-questions')" :active="request()->is('weak-questions')">
+                        苦手質問
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -69,6 +78,15 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="url('/calendar')" :active="request()->is('calendar')">
+                カレンダー
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="url('/companies')" :active="request()->is('companies*')">
+                企業
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="url('/weak-questions')" :active="request()->is('weak-questions')">
+                苦手質問
             </x-responsive-nav-link>
         </div>
 

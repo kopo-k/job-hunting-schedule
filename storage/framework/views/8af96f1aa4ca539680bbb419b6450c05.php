@@ -34,6 +34,8 @@
 
             </main>
         </div>
+
+        <?php echo $__env->yieldPushContent('scripts'); ?>
     </body>
 </html>
 <?php /**PATH /var/www/html/resources/views/layouts/app.blade.php ENDPATH**/ ?>

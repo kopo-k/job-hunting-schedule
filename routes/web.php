@@ -5,6 +5,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\InterviewQuestionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WeakQuestionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('events', EventController::class)->except(['index']);
     Route::post('/events/{event}/questions', [InterviewQuestionController::class, 'store']);
     Route::delete('/questions/{question}', [InterviewQuestionController::class, 'destroy']);
+    Route::get('/weak-questions', [WeakQuestionController::class, 'index']);
 });
 
 require __DIR__.'/auth.php';
