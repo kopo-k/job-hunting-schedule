@@ -17,13 +17,15 @@ class CompanyTest extends TestCase
 
         $response = $this->actingAs($user)->post('/companies', [
             'name' => 'テスト株式会社',
-            'status' => 'エントリー',
+            'status' => '一次面接',
+            'priority' => 3,
         ]);
 
         $response->assertRedirect('/companies');
         $this->assertDatabaseHas('companies', [
             'user_id' => $user->id,
             'name' => 'テスト株式会社',
+            'priority' => 3,
         ]);
     }
 

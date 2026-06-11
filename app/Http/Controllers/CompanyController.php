@@ -25,6 +25,7 @@ class CompanyController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'status' => 'required|string|max:50',
+            'priority' => 'required|integer|between:1,3',
             'memo' => 'nullable|string',
         ]);
         $data['user_id'] = auth()->id();
@@ -57,6 +58,7 @@ class CompanyController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'status' => 'required|string|max:50',
+            'priority' => 'required|integer|between:1,3',
             'memo' => 'nullable|string',
         ]);
         $company->update($data);

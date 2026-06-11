@@ -23,7 +23,10 @@
                     @foreach ($companies as $company)
                         <a href="/companies/{{ $company->id }}"
                            class="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition">
-                            <span class="font-medium text-gray-900">{{ $company->name }}</span>
+                            <span class="flex items-center gap-3">
+                                <span class="font-medium text-gray-900">{{ $company->name }}</span>
+                                <x-priority-badge :priority="$company->priority" />
+                            </span>
                             <x-status-badge :status="$company->status" />
                         </a>
                     @endforeach

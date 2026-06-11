@@ -21,6 +21,7 @@ class CompanyFactory extends Factory
             'user_id' => \App\Models\User::factory(),
             'name' => $this->faker->company(),
             'status' => 'エントリー',
+            'priority' => 2,
             'memo' => null,
         ];
     }

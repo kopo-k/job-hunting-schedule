@@ -7,7 +7,10 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <h1 class="text-2xl font-bold text-gray-900">{{ $company->name }}</h1>
-                        <div class="mt-2"><x-status-badge :status="$company->status" /></div>
+                        <div class="mt-2 flex items-center gap-3">
+                            <x-status-badge :status="$company->status" />
+                            <x-priority-badge :priority="$company->priority" />
+                        </div>
                     </div>
                     <a href="/companies/{{ $company->id }}/edit" class="text-indigo-600 text-sm font-medium hover:underline">編集</a>
                 </div>

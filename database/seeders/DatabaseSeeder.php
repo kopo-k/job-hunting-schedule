@@ -22,11 +22,11 @@ class DatabaseSeeder extends Seeder
         );
 
         $companyA = Company::create([
-            'user_id' => $user->id, 'name' => 'A株式会社', 'status' => '面接',
+            'user_id' => $user->id, 'name' => 'A株式会社', 'status' => '一次面接', 'priority' => 3,
             'memo' => '第一志望。Webサービス系。逆質問を準備しておく。',
         ]);
         $companyB = Company::create([
-            'user_id' => $user->id, 'name' => 'B株式会社', 'status' => '説明会',
+            'user_id' => $user->id, 'name' => 'B株式会社', 'status' => 'ES提出', 'priority' => 2,
             'memo' => '福利厚生が手厚い。職種を確認する。',
         ]);
 
@@ -63,6 +63,13 @@ class DatabaseSeeder extends Seeder
             'title' => 'A社 説明会', 'type' => '説明会',
             'start_at' => '2026-06-18 13:00:00', 'end_at' => '2026-06-18 14:00:00',
             'location' => 'オンライン',
+        ]);
+        // 締切デモ: 直近のES締切（ダッシュボードのアラート・締切タグ用）
+        Event::create([
+            'user_id' => $user->id, 'company_id' => $companyB->id,
+            'title' => 'B社 ES提出締切', 'type' => 'ES締切',
+            'start_at' => '2026-06-13 23:59:00', 'end_at' => '2026-06-14 00:00:00',
+            'location' => 'マイページ',
         ]);
 
         // 苦手質問のデモ

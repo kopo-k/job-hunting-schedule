@@ -13,9 +13,23 @@
                     <input name="name" class="border border-gray-300 rounded-lg w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500" value="{{ old('name') }}" required>
                     @error('name')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">選考状況</label>
-                    <input name="status" class="border border-gray-300 rounded-lg w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500" value="{{ old('status', 'エントリー') }}" required>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">選考状況</label>
+                        <select name="status" class="border border-gray-300 rounded-lg w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
+                            @foreach (['エントリー','ES提出','書類選考','一次面接','二次面接','最終面接','内定','お祈り'] as $s)
+                                <option value="{{ $s }}" @selected(old('status') === $s)>{{ $s }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">志望度</label>
+                        <select name="priority" class="border border-gray-300 rounded-lg w-full p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="3" @selected(old('priority') == 3)>★★★ 第一志望</option>
+                            <option value="2" @selected(old('priority', 2) == 2)>★★ 志望</option>
+                            <option value="1" @selected(old('priority') == 1)>★ 興味あり</option>
+                        </select>
+                    </div>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">メモ</label>

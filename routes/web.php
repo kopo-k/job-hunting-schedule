@@ -14,17 +14,23 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function (\App\Services\ConflictDetector $detector) {
     $userId = auth()->id();
-    $allEvents = \App\Models\Event::where('user_id', $userId)->get();
+    $allEvents = \App\Models\Event::where('user_id', $userId)->with('company')->get();
     $statuses = $detector->detect(
         $allEvents->map(fn ($e) => ['id' => $e->id, 'start' => $e->start_at, 'end' => $e->end_at])->all()
     );
+
+    $upcoming = $allEvents->where('start_at', '>=', now())->sortBy('start_at')->take(5);
 
     return view('dashboard', [
         'companyCount' => \App\Models\Company::where('user_id', $userId)->count(),
         'eventCount' => $allEvents->count(),
         'weakCount' => \App\Models\InterviewQuestion::where('user_id', $userId)->where('result', 'bad')->count(),
-        'upcoming' => $allEvents->where('start_at', '>=', now())->sortBy('start_at')->take(5),
+        'upcoming' => $upcoming,
         'statuses' => $statuses,
+        // 直近3日以内の予定数（提出漏れ・うっかり防止のアラート用）
+        'soonCount' => $allEvents->whereBetween('start_at', [now(), now()->addDays(3)])->count(),
+        // 直近予定に重複(赤)があるか
+        'hasUpcomingConflict' => $upcoming->contains(fn ($e) => ($statuses[$e->id] ?? '') === 'red'),
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 

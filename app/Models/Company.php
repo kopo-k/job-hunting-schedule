@@ -10,7 +10,7 @@ class Company extends Model
     /** @use HasFactory<\Database\Factories\CompanyFactory> */
     use HasFactory;
 
-    protected $fillable = ['user_id', 'name', 'status', 'memo'];
+    protected $fillable = ['user_id', 'name', 'status', 'priority', 'memo'];
 
     public function user()
     {
