@@ -23,9 +23,11 @@ class DatabaseSeeder extends Seeder
 
         $companyA = Company::create([
             'user_id' => $user->id, 'name' => 'A株式会社', 'status' => '面接',
+            'memo' => '第一志望。Webサービス系。逆質問を準備しておく。',
         ]);
         $companyB = Company::create([
             'user_id' => $user->id, 'name' => 'B株式会社', 'status' => '説明会',
+            'memo' => '福利厚生が手厚い。職種を確認する。',
         ]);
 
         // 赤デモ: 時間が重複する2予定
@@ -53,6 +55,14 @@ class DatabaseSeeder extends Seeder
             'title' => 'B社 グループ面接', 'type' => '面接',
             'start_at' => '2026-06-16 11:30:00', 'end_at' => '2026-06-16 12:30:00',
             'location' => '新宿オフィス',
+        ]);
+
+        // 通常(青)デモ: 他と被らない単独の予定
+        Event::create([
+            'user_id' => $user->id, 'company_id' => $companyA->id,
+            'title' => 'A社 説明会', 'type' => '説明会',
+            'start_at' => '2026-06-18 13:00:00', 'end_at' => '2026-06-18 14:00:00',
+            'location' => 'オンライン',
         ]);
 
         // 苦手質問のデモ

@@ -1,4 +1,13 @@
-<x-app-layout>
+<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
+<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('app-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
     <div class="py-8">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-6">
@@ -22,28 +31,35 @@
         </div>
     </div>
 
-    @push('scripts')
+    <?php $__env->startPush('scripts'); ?>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const calendarEl = document.getElementById('calendar');
-            const isMobile = window.innerWidth < 640;
             const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: isMobile ? 'listWeek' : 'dayGridMonth',
+                initialView: 'dayGridMonth',
                 locale: 'ja',
-                timeZone: 'Asia/Tokyo',
                 height: 'auto',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,listWeek'
+                    right: 'dayGridMonth,timeGridWeek'
                 },
-                buttonText: { today: '今日', month: '月', week: '週', list: 'リスト' },
-                noEventsText: '予定はありません',
+                buttonText: { today: '今日', month: '月', week: '週' },
                 events: '/calendar/events'
             });
             calendar.render();
         });
     </script>
-    @endpush
-</x-app-layout>
+    <?php $__env->stopPush(); ?>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php /**PATH /var/www/html/resources/views/calendar/index.blade.php ENDPATH**/ ?>

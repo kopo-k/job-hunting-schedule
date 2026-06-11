@@ -12,8 +12,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
+Route::get('/dashboard', function (\App\Services\ConflictDetector $detector) {
+    $userId = auth()->id();
+    $allEvents = \App\Models\Event::where('user_id', $userId)->get();
+    $statuses = $detector->detect(
+        $allEvents->map(fn ($e) => ['id' => $e->id, 'start' => $e->start_at, 'end' => $e->end_at])->all()
+    );
+
+    return view('dashboard', [
+        'companyCount' => \App\Models\Company::where('user_id', $userId)->count(),
+        'eventCount' => $allEvents->count(),
+        'weakCount' => \App\Models\InterviewQuestion::where('user_id', $userId)->where('result', 'bad')->count(),
+        'upcoming' => $allEvents->where('start_at', '>=', now())->sortBy('start_at')->take(5),
+        'statuses' => $statuses,
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
