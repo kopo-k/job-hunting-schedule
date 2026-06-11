@@ -16,7 +16,8 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <h1 class="text-2xl font-bold text-gray-900"><?php echo e($company->name); ?></h1>
-                        <div class="mt-2"><?php if (isset($component)) { $__componentOriginal8c81617a70e11bcf247c4db924ab1b62 = $component; } ?>
+                        <div class="mt-2 flex items-center gap-3">
+                            <?php if (isset($component)) { $__componentOriginal8c81617a70e11bcf247c4db924ab1b62 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal8c81617a70e11bcf247c4db924ab1b62 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.status-badge','data' => ['status' => $company->status]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('status-badge'); ?>
@@ -35,7 +36,28 @@
 <?php if (isset($__componentOriginal8c81617a70e11bcf247c4db924ab1b62)): ?>
 <?php $component = $__componentOriginal8c81617a70e11bcf247c4db924ab1b62; ?>
 <?php unset($__componentOriginal8c81617a70e11bcf247c4db924ab1b62); ?>
-<?php endif; ?></div>
+<?php endif; ?>
+                            <?php if (isset($component)) { $__componentOriginalb3f3930a96171a12366c9551b2dd3c07 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalb3f3930a96171a12366c9551b2dd3c07 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.priority-badge','data' => ['priority' => $company->priority]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('priority-badge'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['priority' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($company->priority)]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalb3f3930a96171a12366c9551b2dd3c07)): ?>
+<?php $attributes = $__attributesOriginalb3f3930a96171a12366c9551b2dd3c07; ?>
+<?php unset($__attributesOriginalb3f3930a96171a12366c9551b2dd3c07); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalb3f3930a96171a12366c9551b2dd3c07)): ?>
+<?php $component = $__componentOriginalb3f3930a96171a12366c9551b2dd3c07; ?>
+<?php unset($__componentOriginalb3f3930a96171a12366c9551b2dd3c07); ?>
+<?php endif; ?>
+                        </div>
                     </div>
                     <a href="/companies/<?php echo e($company->id); ?>/edit" class="text-indigo-600 text-sm font-medium hover:underline">編集</a>
                 </div>

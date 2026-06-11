@@ -38,17 +38,15 @@
             const calendarEl = document.getElementById('calendar');
             const isMobile = window.innerWidth < 640;
             const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: isMobile ? 'listWeek' : 'dayGridMonth',
+                initialView: isMobile ? 'listMonth' : 'dayGridMonth',
                 locale: 'ja',
                 timeZone: 'Asia/Tokyo',
                 height: 'auto',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,listWeek'
-                },
+                headerToolbar: isMobile
+                    ? { left: 'prev,next', center: 'title', right: 'today' }
+                    : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,listMonth' },
                 buttonText: { today: '今日', month: '月', week: '週', list: 'リスト' },
-                noEventsText: '予定はありません',
+                noEventsText: 'この期間に予定はありません',
                 events: '/calendar/events'
             });
             calendar.render();

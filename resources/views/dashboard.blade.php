@@ -4,20 +4,36 @@
             <h1 class="text-2xl font-bold text-gray-900 mb-1">こんにちは、{{ Auth::user()->name }}さん</h1>
             <p class="text-sm text-gray-500 mb-6">就活の予定と振り返りをまとめて管理しましょう。</p>
 
-            @if ($hasUpcomingConflict)
-                <a href="/calendar" class="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4 mb-4 hover:bg-red-100 transition">
+            {{-- 重複アラート（具体名つき）と締切アラートは両方とも見逃せないので同時に表示 --}}
+            @if ($conflictEvents->isNotEmpty())
+                <a href="/calendar" class="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4 mb-3 hover:bg-red-100 transition">
                     <span class="text-red-500 text-xl leading-none">⚠️</span>
-                    <div>
+                    <div class="min-w-0">
                         <p class="font-semibold text-red-800">予定の重複があります</p>
-                        <p class="text-sm text-red-700">直近の予定に時間が重なっているものがあります。志望度を見て優先順位を決めましょう。</p>
+                        <p class="text-sm text-red-700 mb-1">志望度を見て優先順位を決めましょう。</p>
+                        <ul class="text-sm text-red-900 space-y-0.5">
+                            @foreach ($conflictEvents->take(4) as $ce)
+                                <li>・{{ $ce->start_at->format('n/j H:i') }} {{ $ce->title }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 </a>
-            @elseif ($soonCount > 0)
+            @endif
+
+            @if ($soonEvents->isNotEmpty())
                 <div class="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
                     <span class="text-amber-500 text-xl leading-none">🔔</span>
-                    <div>
-                        <p class="font-semibold text-amber-800">3日以内に {{ $soonCount }} 件の予定があります</p>
-                        <p class="text-sm text-amber-700">ES締切や面接の準備に漏れがないか確認しましょう。</p>
+                    <div class="min-w-0">
+                        <p class="font-semibold text-amber-800">7日以内に {{ $soonEvents->count() }} 件の予定があります</p>
+                        <p class="text-sm text-amber-700 mb-1">ES締切や面接の準備に漏れがないか確認しましょう。</p>
+                        <ul class="text-sm text-amber-900 space-y-0.5">
+                            @foreach ($soonEvents->take(4) as $se)
+                                <li class="flex items-center gap-1.5">
+                                    @if ($se->type === 'ES締切')<span class="text-xs font-medium px-1.5 rounded bg-rose-100 text-rose-700">締切</span>@endif
+                                    {{ $se->start_at->format('n/j H:i') }} {{ $se->title }}
+                                </li>
+                            @endforeach
+                        </ul>
                     </div>
                 </div>
             @endif

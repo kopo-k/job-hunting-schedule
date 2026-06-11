@@ -19,7 +19,8 @@ Route::get('/dashboard', function (\App\Services\ConflictDetector $detector) {
         $allEvents->map(fn ($e) => ['id' => $e->id, 'start' => $e->start_at, 'end' => $e->end_at])->all()
     );
 
-    $upcoming = $allEvents->where('start_at', '>=', now())->sortBy('start_at')->take(5);
+    $future = $allEvents->where('start_at', '>=', now())->sortBy('start_at');
+    $upcoming = $future->take(5);
 
     return view('dashboard', [
         'companyCount' => \App\Models\Company::where('user_id', $userId)->count(),
@@ -27,10 +28,10 @@ Route::get('/dashboard', function (\App\Services\ConflictDetector $detector) {
         'weakCount' => \App\Models\InterviewQuestion::where('user_id', $userId)->where('result', 'bad')->count(),
         'upcoming' => $upcoming,
         'statuses' => $statuses,
-        // 直近3日以内の予定数（提出漏れ・うっかり防止のアラート用）
-        'soonCount' => $allEvents->whereBetween('start_at', [now(), now()->addDays(3)])->count(),
-        // 直近予定に重複(赤)があるか
-        'hasUpcomingConflict' => $upcoming->contains(fn ($e) => ($statuses[$e->id] ?? '') === 'red'),
+        // これから来る予定のうち重複(赤)のもの（具体名を出して優先判断を促す）
+        'conflictEvents' => $future->filter(fn ($e) => ($statuses[$e->id] ?? '') === 'red')->values(),
+        // 7日以内に迫る予定（ES締切など。1週間前から準備したい就活生のニーズに合わせる）
+        'soonEvents' => $future->filter(fn ($e) => $e->start_at->lte(now()->addDays(7)))->values(),
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
