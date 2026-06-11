@@ -78,19 +78,27 @@ Expected: `app` と `mysql` コンテナが起動（`docker ps` で2つ確認）
 ```
 Expected: マイグレーションが成功し `Migrating: ... Done` が表示される（MySQL接続OKの証拠）。
 
-- [ ] **Step 5: 起動確認**
+- [ ] **Step 5: DBユーザがroot以外であることを確認（提出要件）**
+
+`.env` を確認する。
+```bash
+grep '^DB_USERNAME' .env
+```
+Expected: `DB_USERNAME=sail`（root以外の一般ユーザ）。Sailが自動で一般ユーザ `sail` を作成するため要件を満たす。rootになっていた場合は `.env` の `DB_USERNAME` を `sail` に修正し `sail down -v && sail up -d` で作り直す。
+
+- [ ] **Step 6: 起動確認**
 
 ブラウザで `http://localhost` を開く。
 Expected: Laravelのwelcome画面が表示される。
 
-- [ ] **Step 6: テストが動くことを確認**
+- [ ] **Step 7: テストが動くことを確認**
 
 ```bash
 ./vendor/bin/sail artisan test
 ```
 Expected: 既定のサンプルテストがPASS。
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A
@@ -1567,6 +1575,218 @@ Expected: 全テストPASS。
 git add -A
 git commit -m "苦手質問リスト(横断一覧)とナビゲーションを追加"
 ```
+
+---
+
+## Task 8: 提出用の初期化スクリプト(Seeder)とREADME
+
+**Files:**
+- Modify: `database/seeders/DatabaseSeeder.php`
+- Create: `README.md`
+- Test: `tests/Feature/SeederTest.php`
+
+> 提出要件: DB初期化スクリプト＋初期データ投入コード＋実行README。Laravelの**マイグレーション(スキーマ)** と **シーダー(初期データ)** が「初期化スクリプト」に該当する。デモ用ユーザと、被り（赤・黄）が一目で分かるサンプル予定を投入する。
+
+- [ ] **Step 1: 失敗するフィーチャテストを書く（シーダーが初期データを作る）**
+
+`tests/Feature/SeederTest.php`:
+```php
+<?php
+namespace Tests\Feature;
+
+use App\Models\Company;
+use App\Models\Event;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class SeederTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_seeder_creates_demo_data(): void
+    {
+        $this->seed();
+
+        $this->assertDatabaseHas('users', ['email' => 'demo@example.com']);
+        $this->assertTrue(Company::count() >= 1);
+        $this->assertTrue(Event::count() >= 2); // 被りデモのため最低2件
+    }
+}
+```
+
+- [ ] **Step 2: テストが失敗することを確認**
+
+```bash
+./vendor/bin/sail artisan test --filter=SeederTest
+```
+Expected: FAIL（デモユーザが存在しない）。
+
+- [ ] **Step 3: DatabaseSeederを実装**
+
+`database/seeders/DatabaseSeeder.php`:
+```php
+<?php
+namespace Database\Seeders;
+
+use App\Models\Company;
+use App\Models\Event;
+use App\Models\InterviewQuestion;
+use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+
+class DatabaseSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $user = User::firstOrCreate(
+            ['email' => 'demo@example.com'],
+            ['name' => 'デモ太郎', 'password' => Hash::make('password')]
+        );
+
+        $companyA = Company::create([
+            'user_id' => $user->id, 'name' => 'A株式会社', 'status' => '面接',
+        ]);
+        $companyB = Company::create([
+            'user_id' => $user->id, 'name' => 'B株式会社', 'status' => '説明会',
+        ]);
+
+        // 赤デモ: 時間が重複する2予定
+        Event::create([
+            'user_id' => $user->id, 'company_id' => $companyA->id,
+            'title' => 'A社 最終面接', 'type' => '面接',
+            'start_at' => '2026-06-15 14:00:00', 'end_at' => '2026-06-15 15:00:00',
+            'location' => '東京本社',
+        ]);
+        Event::create([
+            'user_id' => $user->id, 'company_id' => $companyB->id,
+            'title' => 'B社 説明会', 'type' => '説明会',
+            'start_at' => '2026-06-15 14:30:00', 'end_at' => '2026-06-15 15:30:00',
+            'location' => 'オンライン',
+        ]);
+        // 黄デモ: 間隔が30分しかない予定
+        $interview = Event::create([
+            'user_id' => $user->id, 'company_id' => $companyA->id,
+            'title' => 'A社 一次面接', 'type' => '面接',
+            'start_at' => '2026-06-16 10:00:00', 'end_at' => '2026-06-16 11:00:00',
+            'location' => '東京本社',
+        ]);
+        Event::create([
+            'user_id' => $user->id, 'company_id' => $companyB->id,
+            'title' => 'B社 グループ面接', 'type' => '面接',
+            'start_at' => '2026-06-16 11:30:00', 'end_at' => '2026-06-16 12:30:00',
+            'location' => '新宿オフィス',
+        ]);
+
+        // 苦手質問のデモ
+        InterviewQuestion::create([
+            'user_id' => $user->id, 'event_id' => $interview->id,
+            'question' => '当社が第一志望ですか？', 'result' => 'bad',
+            'improvement_memo' => '志望度の高さを具体的なエピソードで示す',
+        ]);
+    }
+}
+```
+
+- [ ] **Step 4: テストが通ることを確認**
+
+```bash
+./vendor/bin/sail artisan test --filter=SeederTest
+```
+Expected: PASS。
+
+- [ ] **Step 5: 初期化が一発で通ることを手動確認**
+
+```bash
+./vendor/bin/sail artisan migrate:fresh --seed
+```
+Expected: 全テーブル再作成後、デモデータが投入される。`http://localhost/login` に `demo@example.com` / `password` でログインし、カレンダーに赤・黄の予定が見えること。
+
+- [ ] **Step 6: READMEを作成**
+
+`README.md`:
+````markdown
+# 就活スケジュール管理アプリ
+
+就活の予定の被りを信号機カラー（🔴重複 / 🟡間隔狭）で可視化し、面接で答えられなかった
+質問を全企業横断でリスト化するWebアプリ（Laravel + MySQL + Docker）。
+
+## 動作環境
+
+- Docker Desktop（Docker Compose v2）
+
+## セットアップ手順
+
+```bash
+# 1. 依存パッケージのインストール（初回のみ・Docker経由）
+docker run --rm -v "$(pwd)":/var/www/html -w /var/www/html laravelsail/php83-composer:latest \
+    composer install --ignore-platform-reqs
+
+# 2. 環境ファイルを用意
+cp .env.example .env
+
+# 3. コンテナ起動（app + mysql）
+./vendor/bin/sail up -d
+
+# 4. アプリキー生成
+./vendor/bin/sail artisan key:generate
+
+# 5. DB初期化スクリプト実行（テーブル作成＋初期データ投入）
+./vendor/bin/sail artisan migrate:fresh --seed
+
+# 6. フロントエンドビルド
+./vendor/bin/sail npm install
+./vendor/bin/sail npm run build
+```
+
+ブラウザで http://localhost を開く。
+
+## デモログイン
+
+| メールアドレス | パスワード |
+|---------------|-----------|
+| demo@example.com | password |
+
+## データベース
+
+- DBユーザ: `sail`（root以外の一般ユーザ）
+- 初期化スクリプト: `database/migrations/`（スキーマ）＋ `database/seeders/DatabaseSeeder.php`（初期データ）
+- 再初期化: `./vendor/bin/sail artisan migrate:fresh --seed`
+
+## 主な機能
+
+- 予定のカレンダー管理（FullCalendar.js）と被り検出（🔴重複 / 🟡間隔60分未満）
+- 応募企業の管理
+- 面接の振り返り（質問・手応え・改善メモ）
+- 答えられなかった質問の横断リスト
+
+## コマンド対応表（sail = docker compose）
+
+| 操作 | コマンド |
+|------|---------|
+| 起動 | `./vendor/bin/sail up -d`（= `docker compose up -d`）|
+| 停止 | `./vendor/bin/sail down` |
+| テスト | `./vendor/bin/sail artisan test` |
+````
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add -A
+git commit -m "提出用の初期化シーダーとREADMEを追加"
+```
+
+---
+
+## 提出物チェックリスト（Moodle 期末レポート / 期限 2026-07-27 13:30）
+
+- [ ] プログラム一式（このリポジトリ）
+- [ ] README（`README.md` / Task 8）
+- [ ] DB初期化スクリプト（`database/migrations/` ＋ `database/seeders/DatabaseSeeder.php` / Task 8）
+- [ ] DBユーザがroot以外（`sail` ユーザ / Task 0 Step 5で確認）
+- [ ] レポート（A4 2段組 6ページ以上・中間レポートと同じスタイルシート）※コードとは別途。設計書をもとに作成
+- [ ] 上記を1つのZIPにまとめて提出
 
 ---
 
